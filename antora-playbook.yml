@@ -1,0 +1,14 @@
+content:
+  sources:
+  - url: .
+    branches: HEAD
+site:
+  title: "Boost Asio Book"
+  url: https://github.com/cppalliance/asio-book
+  start_page: ROOT::index
+output:
+  dir: ./build/site
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
