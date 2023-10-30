@@ -1,0 +1,50 @@
+<header class="header">
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{{{or site.url siteRootPath}}}/doc/{{{page.component.name}}}/">
+                <img src="{{{uiRootPath}}}/img/banner.svg" alt="" width="130">
+                {{#unless (eq page.version 'master') }}
+                    <div class="navbar-item-nonProduction">
+                        <p>{{{page.version}}}</p>
+                    </div>
+                {{/unless}}
+            </a>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+
+        <div id="topbar-nav" class="navbar-menu">
+            {{#unless site.keys.hideNavbarComponentsList}}
+                <div class="navbar-item is-hoverable">
+                    {{#if (or page.home (eq site.title page.title)) }}
+                        <a class="navbar-link" href="{{{or site.url siteRootPath}}}">{{{ site.title}}}</a>
+                    {{ else }}
+                        <a class="navbar-link" href="{{{or site.url siteRootPath}}}">{{{ site.title}}}
+                            : {{ page.title }}</a>
+                    {{/if}}
+                </div>
+                {{#if site.keys.repoUrl }}
+                    <div class="navbar-item is-hoverable">
+                        <a class="navbar-link" href="{{{ site.keys.repoUrl }}}" target="_blank">GitHub</a>
+                    </div>
+                    <div class="navbar-item is-hoverable">
+                        <a class="navbar-link" href="{{{ site.keys.repoUrl }}}/releases" target="_blank">Releases</a>
+                    </div>
+                {{/if}}
+            {{/unless}}
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                      <span class="control">
+                        <a class="button is-primary" target="blank_"
+                           href="{{{ site.keys.repoUrl }}}/issues/new/choose">Report an Issue</a>
+                      </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
