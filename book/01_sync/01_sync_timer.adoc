@@ -1,0 +1,75 @@
+//
+// Copyright (c) 2023 Klemens Morgenstern (klemens.morgenstern@gmx.net)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+// STATE: Stream of consciousness
+
+
+ifndef::asio-doc[]
+:asio_doc: https://www.boost.org/doc/libs/develop/doc/html/boost_asio
+endif::asio-doc[]
+
+ifndef::asio-ref[]
+:asio-ref: {asio_doc}/reference
+endif::asio-ref[]
+
+
+$asio-ref
+$asio-doc
+
+== Timers
+
+TIP: This section will teach you what execution_contexts and io-objects are, and how typical 
+
+
+The simplest operation asio provides is awaiting timer. 
+
+[source,cpp]
+----
+include::./code/01_sync_timer_throw.cpp[tag=example]
+----
+<1> The {asio-ref}/io_context.html[io_context] is the execution context used by the timer.
+<2> The timer io-object, initialized with a hard-coded delay.
+<3> Perform the operation, i.e. wait for the timer.
+
+((execution context)):: 
+    The context is used by the io object to store & share internal data.
+
+((io-object))::
+    An io-object is a type that performs operations within a given execution-context.
+
+((timer))::
+    A timer is an io-object that be awaited and cancelled.
+
+((wait))::
+    Perform a synchronous (i.e. blocking) wait.
+
+NOTE: Asio provides a timer for every https://en.cppreference.com/w/cpp/chrono[`std::chrono`] clock (added in C++11): 
+{asio-ref}/steady_timer.html[`steady_timer`],
+{asio-ref}/system_timer.html[`system_timer`] and {asio-ref}/high_resolution_timer.html[`high_resolution_timer`], 
+
+ 
+Synchronous operations usually come in a throwing and non-throwing version.
+
+The `wait()` overload used in the above example is the throwing overload,
+which will throw a `((system_error))` if the operation fails.
+The non-throwing overload caputures an ((error_code)) by reference as the last parameter.
+
+[source,cpp]
+----
+include::./code/01_sync_timer_ec.cpp[tag=example]
+----
+<1> The {asio-ref}/io_context.html[io_context] is the execution context used by the timer.
+<2> The timer io-object, initialized with a hard-coded delay.
+<3> Declare the `error_code` to capture errors
+<4> Perform the operation, i.e. wait for the timer.
+<5> Return `EXIT_FAILURE` if the operation failed.
+
+
+IMPORTANT: The non-throwing version means that an operation error will not cause an exception. This is not a `noexcept` guarantee, as cross-cuttings concerns (such as `std::bad_alloc`) will still cause exceptions to be throw.
+
+
+
