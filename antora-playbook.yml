@@ -1,0 +1,33 @@
+# npm install
+# npx antora --fetch antora-playbook.yml
+site:
+  title: Boost Asio Book
+  url: https://github.com/cppalliance/asio-book
+  start_page: asio-book::index.adoc
+  robots: allow
+  keys:
+    repo_url: 'https://github.com/cppalliance/asio-book'
+
+content:
+  branches: [ master, develop ]
+  tags: [ v* ]
+  edit_url: 'https://github.com/cppalliance/asio-book/edit/{refname}/{path}'
+  sources:
+    - url: https://github.com/cppalliance/asio-book.git
+      # start_path: docs
+      edit_url: 'https://github.com/cppalliance/asio-book/edit/{refname}/{path}'
+
+ui:
+  bundle:
+    url: ./ui/ui-bundle.zip
+    snapshot: true
+  supplemental_files: ./supplemental-ui
+
+antora:
+  extensions:
+    - require: '@antora/lunr-extension' # https://gitlab.com/antora/antora-lunr-extension
+      index_latest_only: true
+
+asciidoc:
+  extensions:
+    - '@asciidoctor/tabs'
