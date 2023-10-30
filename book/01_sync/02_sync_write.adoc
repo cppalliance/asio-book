@@ -33,9 +33,15 @@ Write streams in asio have a `write_some`, not `write` function.
 Instead of writing all the data, asio writes as much data is can be done in a single system call. (This is more important asynchronous code). The size of the actually written data depends on the system API and settings like buffer sizes. The user of a `write_some` function therefor needs to consider the return value
 telling him how much data was written. Asio provides algorithms like <<write>> for that, which will be discussed later.
 
-The first parameter to the `write_some` function is a <<((ConstBufferSequence))>>.
+The first parameter to the `write_some` function is a <<((ConstBufferSequence))>>,
+which will discussed in more detail later as well.
+For now, note that we're using the {asio-ref}/buffer.html[`asio::buffer`] function, 
+which returns a {asio-ref}/mutable_buffer.html[`asio::mutable_buffer`]. 
+This gives us a type-erased view of the memory to be written, essentially a `[const void *, std::size_t]` pair.
+A single `mutable_buffer` or {asio-ref}/const_buffer.html[`asio::const_buffer`] 
+fulfills the <<((ConstBufferSequence))>> requirements and .
 
-// TODO: DO we put the sequence spec here?
+// KDM: I was thinking to put that here, but it'll be distracting I think
 
 
 A write operation may produce an error AND write data. In the case of the {asio-ref}/stream_file.html[`asio::stream_file`] this can happen when the operation reached the end of a file. Thus using the throwing overload my lose data.
