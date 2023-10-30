@@ -7,7 +7,6 @@
 
 
 // tag::example[]
-
 #include <boost/asio.hpp>
 namespace asio = boost::asio;
 
@@ -18,5 +17,4 @@ int main(int argc, char * argv[])
     timer.wait(); // <3>
     return 0;
 }
-
 // end::example[]

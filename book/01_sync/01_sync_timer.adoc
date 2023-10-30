@@ -7,37 +7,28 @@
 
 // STATE: Stream of consciousness
 
+=== Timers
 
-ifndef::asio-doc[]
-:asio_doc: https://www.boost.org/doc/libs/develop/doc/html/boost_asio
-endif::asio-doc[]
+TIP: This section will teach you what execution_contexts and I/O Objectss are, and how typical
 
-ifndef::asio-ref[]
-:asio-ref: {asio_doc}/reference
-endif::asio-ref[]
-
-== Timers
-
-TIP: This section will teach you what execution_contexts and io-objects are, and how typical 
-
-The simplest operation asio provides is awaiting timer. 
+The simplest operation Asio provides is awaiting timer.
 
 [source,cpp]
 ----
 include::./code/01_sync_timer_throw.cpp[tag=example]
 ----
 <1> The {asio-ref}/io_context.html[io_context] is the execution context used by the timer.
-<2> The timer io-object, initialized with a hard-coded delay.
+<2> The timer I/O Objects, initialized with a hard-coded delay.
 <3> Perform the operation, i.e. wait for the timer.
 
 ((execution context)):: 
     The context is used by the io object to store & share internal data.
 
-((io-object))::
-    An io-object is a type that performs operations within a given execution-context.
+((I/O Objects))::
+    An I/O Objects is a type that performs operations within a given execution-context.
 
 ((timer))::
-    A timer is an io-object that be awaited and cancelled.
+    A timer is an I/O Objects that be awaited and cancelled.
 
 ((wait))::
     Perform a synchronous (i.e. blocking) wait.
@@ -58,7 +49,7 @@ The non-throwing overload caputures an ((error_code)) by reference as the last p
 include::./code/01_sync_timer_ec.cpp[tag=example]
 ----
 <1> The {asio-ref}/io_context.html[io_context] is the execution context used by the timer.
-<2> The timer io-object, initialized with a hard-coded delay.
+<2> The timer I/O Objects, initialized with a hard-coded delay.
 <3> Declare the `error_code` to capture errors
 <4> Perform the operation, i.e. wait for the timer.
 <5> Return `EXIT_FAILURE` if the operation failed.

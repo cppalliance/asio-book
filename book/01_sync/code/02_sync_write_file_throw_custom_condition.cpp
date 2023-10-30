@@ -19,7 +19,7 @@ int main(int argc, char * argv[])
                            asio::stream_file::write_only | asio::stream_file::create};
 
     std::string data = "Hello World\n";
-    asio::write(file, asio::buffer(data)); // <1>
+    asio::write(file, asio::buffer(data), asio::transfer_at_least(11)); // <1>
     return 0;
 }
 // end::example[]

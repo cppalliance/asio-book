@@ -19,6 +19,6 @@ int main(int argc, char * argv[])
 
     error_code ec; // <3>
     timer.wait(ec); // <4>
-    return ec ? EXIT_FAILURE : EXIT_SUCCESS;
+    return ec ? EXIT_FAILURE : EXIT_SUCCESS; // <5>
 }
 // end::example[]

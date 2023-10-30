@@ -14,12 +14,11 @@ namespace asio = boost::asio;
 
 int main(int argc, char * argv[])
 {
-    asio::io_context ioc;
-    asio::stream_file file{ioc, "./test-file", 
-                           asio::stream_file::write_only | asio::stream_file::create};
+    asio::io_context ioc; // <1>
+    asio::stream_file file{ioc, "./test-file", asio::stream_file::write_only | asio::stream_file::create}; // <2>
 
     std::string data = "Hello World\n";
-    asio::write(file, asio::buffer(data)); // <1>
+    asio::write(file, asio::buffer(data)); // <3>
     return 0;
 }
 // end::example[]
