@@ -16,14 +16,9 @@ ifndef::asio-ref[]
 :asio-ref: {asio_doc}/reference
 endif::asio-ref[]
 
-
-$asio-ref
-$asio-doc
-
 == Timers
 
 TIP: This section will teach you what execution_contexts and io-objects are, and how typical 
-
 
 The simplest operation asio provides is awaiting timer. 
 
@@ -70,6 +65,4 @@ include::./code/01_sync_timer_ec.cpp[tag=example]
 
 
 IMPORTANT: The non-throwing version means that an operation error will not cause an exception. This is not a `noexcept` guarantee, as cross-cuttings concerns (such as `std::bad_alloc`) will still cause exceptions to be throw.
-
-
 
