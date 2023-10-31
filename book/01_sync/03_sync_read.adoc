@@ -1,0 +1,64 @@
+//
+// Copyright (c) 2023 Klemens Morgenstern (klemens.morgenstern@gmx.net)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+// STATE: Stream of consciousness
+
+=== Reading from file
+
+Reading from a stream IO Object is similar to writing, except that we need a mutable_buffer sequence.
+
+[source,cpp]
+----
+include::./code/03_sync_read_some_file_throw.cpp[tag=example]
+----
+<1> Open the file for reading
+<2> Prepare a section of memory to read into
+<3> Read a section of memory and remember how much we read
+<4> Resize the string, so `data` is equal to the data read.
+
+Previously we have sloppily ignored that actual amount of data written to the file.
+Since we preallocate 1 kb of memory to read into, we need to remember the size, so we know how much of that got actually used.
+
+// this feels a bit short, but it seems obvious based on the previous chapter
+
+NOTE: Since the `error_code` overload has been demonstrated in previous chapter, we'll skip mentioning it moving forward.
+
+
+=== ((read operation))
+
+The read operations is similar to a <<write operation>>, in that it will read until the buffer is full.
+
+[source,cpp]
+----
+include::./code/03_sync_read_file_throw.cpp[tag=example]
+----
+<1> Open the file for reading
+<2> Set the read buffer to the same size the file is.
+<3> Read until the buffer is full, that shuold be the entire file.
+<4> Resize the string, so `data` is equal to the data read.
+
+
+NOTE: `asio::read` works with <<CompletionConditions>> in the same way `asio::write` does.
+
+WARNING: This can lead to major issues if can't be sure how much data will be provided.
+
+=== ((MutableBufferSequence))
+
+Similar to the `write` functions, the `read` function utilize a buffer sequence.
+This will allow you to read memory into different sections of memory.
+
+[source,cpp]
+----
+include::./code/03_sync_read_file_sequence_throw.cpp[tag=example]
+----
+<1> Open the file for reading
+<2> Prepare a sections of memory to read into
+<3> Read data, possibly filling both buffers
+<4> Resize the memory sections depending on how much memory was read.
+
+
+

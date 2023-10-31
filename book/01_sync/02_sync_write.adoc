@@ -1,0 +1,116 @@
+//
+// Copyright (c) 2023 Klemens Morgenstern (klemens.morgenstern@gmx.net)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+// STATE: Stream of consciousness
+
+=== File IO Objects
+
+NOTE: File IO only works on windows or linux when `BOOST_ASIO_HAS_IO_URING` is defined & `liburing` installed.
+
+[source,cpp]
+----
+include::./code/03_sync_read_some_file_throw.cpp[tag=example]
+----
+<1> The ((execution context))
+<2> The file I/O Objects for stream reading (i.e. non-random access).
+The constructor opens the file with the given flags and may throw a `system_error`.
+<3> Perform the ((write_some)) operation 
+
+Write streams in Asio have a `write_some`, not a `write` function.
+Instead of all the data, Asio writes as much data is can be done in a single system call.
+The size of the actually written data depends on the system API and settings like buffer sizes.
+The user of a `write_some` function therefor needs to consider the return value
+telling him how much data was written.
+
+The first parameter to the `write_some` function is a <<ConstBufferSequence>,
+which will discussed in more detail later as well.
+For now, note that we're using the {asio-ref}/buffer.html[`asio::buffer`] function, 
+which returns a {asio-ref}/mutable_buffer.html[`asio::mutable_buffer`]. 
+This gives us a type-erased view of the memory to be written, essentially a `[void *, std::size_t]` pair.
+Obviously, any mutable section of memory can be viewed as a constant one, thus
+`asio::mutable_buffer` is implicitly convertible to `asio::const_buffer.
+
+NOTE: `asio::buffer("Hello World!\n")` would include the null-terminator.
+
+// KDM: I was thinking to more about buffer sequences here, but it'll be distracting I think
+
+A `write_some` operation may produce an error and write data. In the case of the {asio-ref}/stream_file.html[`asio::stream_file`]
+this can happen when the operation reached the end of a file. Thus using the throwing overload my lose data.
+
+As typical for synchronous operations, the non-throwing overload adds a reference to `error_code` at the end to handle operation errors.
+
+[source,cpp]
+----
+include::./code/02_sync_write_some_file_ec.cpp[tag=example]
+----
+<1> Initiate the I/O Objects without opening the file, to avoid exceptions.
+<2> Open the file with the non-throwing overload.
+<3> Check that the `open` function didn't produce an error before writing.
+<4> Perform the write with the non-throwing overload.
+
+
+=== ((write)) operation
+
+The stream I/O object's way of writing data is a `write_some` function, that writes an unspecified amount of data,
+is rather undesirable for most applications.
+
+The Asio way of addressing this, is to provide a generic algorithm that can provide a write operation that will invoke `write_some`
+as often as needed. These kinds of operations are called ((composed operations)).
+
+[source,cpp]
+----
+include::./code/02_sync_write_file_throw.cpp[tag=example]
+----
+<1> Instead of `file.write_some(...)` we're using `asio::write(file, ...)` so all data gets written.
+
+By default `write` will write until the entire has been written. However, `write` also supports custom
+{asio-ref}/CompletionCondition.html[((CompletionCondition))s].
+[#CompletionConditions]
+
+[source,cpp]
+----
+include::./code/02_sync_write_file_throw_custom_condition.cpp[tag=example]
+----
+<1> With the condition we're writing at least 11 bytes out of a 12 byte buffer.
+The built-in `CompletionConditions` in asio are:
+
+- {asio-ref}/transfer_at_least.html[`asio::transfer_all`]
+- {asio-ref}/transfer_at_least.html[`asio::transfer_at_least`]
+- {asio-ref}/transfer_at_least.html[`asio::transfer_exactly`]
+
+
+NOTE: All `asio::write` functions also has an overload that takes `error_code` as it's last parameter.
+
+=== ((ConstBufferSequence))
+
+asio's `write` and `write_some` functions do not take a single buffer, but a buffer sequence as its argument.
+That is because the operating system's operation may support vectorized IO:
+instead of writing data from a single segment of memory, the OS will write data from a vector of these.
+
+By allowing you to pass in multiple buffers into a write one, asio doesn't need to impose requirements like rearranging
+memory before the asynchronous operation.
+For example, you may have a message with a header and a body, and by using a vector of size 2, you don't need to copy
+the header and body into a dedicated memory section before initiating IO.
+
+[source,cpp]
+----
+include::./code/02_sync_write_file_sequence_throw.cpp[tag=example]
+----
+<1> Create a buffer sequence
+<2> Write multiple buffers to the file
+
+In order for a type to be a {asio-ref}/ConstBufferSequence.html[ConstBufferSequence],
+it needs to be a range, i.e. a type with a `begin` and `end` function, returning an iterator to a `asio::const_buffer`.
+
+Additionally, a single `asio::const_buffer` (or mutable) is itself a `ConstBufferSequence` of size 1.
+This avoids an extra overload of functions like `write` for a single buffer. I.e. you can just use
+{asio-ref}/buffer_sequence_begin.html[`asio::buffer_sequence_begin`] and
+{asio-ref}/buffer_sequence_end.html[`asio::buffer_sequence_end`] to iterator over the buffer sequence
+even if the caller passes in a single `const_buffer`.
+
+
+

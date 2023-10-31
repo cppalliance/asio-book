@@ -1,0 +1,22 @@
+//
+// Copyright (c) 2023 Klemens Morgenstern (klemens.morgenstern@gmx.net)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+// STATUS: No docs yet really
+
+== read json
+
+https://www.boost.org/doc/libs/release/libs/json[boost.json]
+provides excellent stream based serialization & parsing.
+We'll utilize to write our own `read` & `write` functions,
+to provide examples without implementing parsing & serialization.
+
+[source,cpp]
+----
+include::./code/07_sync_read_json.cpp[tag=example]
+----
+
+

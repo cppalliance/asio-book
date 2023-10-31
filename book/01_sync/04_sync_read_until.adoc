@@ -1,0 +1,61 @@
+//
+// Copyright (c) 2023 Klemens Morgenstern (klemens.morgenstern@gmx.net)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+// STATE: Stream of consciousness
+
+=== ((read_until))
+
+The <<read_operation>> doesn't work well if the input size is unknown.
+E.g. when reading the lines of a file `asio::read` will try to overread,
+unless we are guaranteed a certain lenght of each line.
+
+To address this, Asio provides a {asio-ref}/read_until.html[`read_until`],
+that will read until a delimiter is reached.
+
+[source,cpp]
+----
+include::./code/04_sync_read_until_file_throw.cpp[tag=example]
+----
+<1> Open the file for reading
+<2> Read until the delimiter `\n` is found.
+<3> Get the data before `\n` from the `buffer`
+<4> Remove the data from the `buffer`.
+
+The `read_until` function will use `read_some` and scan the read data for the delimiter.
+Because of this, `read_until` may read more data after the delimiter,
+which we need to store somewhere.
+
+The {asio-ref}/dynamic_buffer.html[dynamic_buffer] we're using returns a
+{asio-ref}/dynamic_string_buffer.html[dynamic_string_buffer].
+
+The `read_until` function will resize the `buffer` and store all data inside.
+The returned `size_t` is the data up and including the delimiter.
+
+Let's say our input data is this and is read with one `read_some`:
+
+[source]
+----
+Hello World!
+Bye World
+----
+
+Then `n`, the value returned from `read_until` will be the position of the delimiter,
+while `buffer` will be resized so it contains all the data.
+
+[ditaa]
+----
++---+---+---+---+---+---+---+---+---+---+---+---+----+---+---+---+---+---+---+---+---+---+
+| H | e | l | l | o |   | W | o | r | l | d | ! | \n | B | y | e |   | W | o | r | l | d |
++---+---+---+---+---+---+---+---+---+---+---+---+----+---+---+---+---+---+---+---+---+---+
+^                                                    ^                                   ^
+|                                                    |                                   |
++------------------------ n -------------------------+                                   |
+|                                                                                        |
++---------------------------------------- buffer ----------------------------------------+
+----
+
+// KDM: This feels like a weird cutoff

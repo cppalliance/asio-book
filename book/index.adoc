@@ -1,0 +1,40 @@
+= boost.asio book
+Klemens Morgenstern <klemens.morgenstern@gmx.net>, Vinnie Falco <vinnie.falco@gmail.com>, Fernando Pelliccioni <fpelliccioni@gmail.com>
+Version 0.1, 30.10.2023
+:source-highlighter: rouge
+:toc: left
+:toclevels: 4
+:icons: font
+:idprefix:
+:docinfo: private-footer
+:source-highlighter: rouge
+:source-language: c++
+:example-caption: Example
+
+ifndef::asio-doc[]
+:asio_doc: https://www.boost.org/doc/libs/develop/doc/html/boost_asio
+endif::asio-doc[]
+
+ifndef::asio-ref[]
+:asio-ref: {asio_doc}/reference
+endif::asio-ref[]
+
+ifndef::beast-ref[]
+:beast-ref: https://www.boost.org/doc/libs/develop/libs/beast/doc/html/beast/ref
+endif::beast-ref[]
+
+== Synchronous IO
+
+include::01_sync/01_sync_timer.adoc[]
+include::01_sync/02_sync_write.adoc[]
+include::01_sync/03_sync_read.adoc[]
+include::01_sync/04_sync_read_until.adoc[]
+include::01_sync/05_dynamic_buffer.adoc[]
+
+== ONLY EXPOSITION
+
+include::01_sync/06_write_json.adoc[]
+include::01_sync/07_read_json.adoc[]
+
+[index]
+== Index
