@@ -17,10 +17,20 @@ int main(int argc, char * argv[])
     asio::io_context ioc;
     asio::stream_file file{ioc, "./test-file", asio::stream_file::read_only}; // <1>
 
-    std::string data;
-    data.resize(1024); // <2>
-    std::size_t n = file.read_some(asio::buffer(data)); // <3>
-    data.resize(n); // <4>
+    std::string data1, data2;
+    data1.resize(512); // <2>
+    data2.resize(512);
+
+    std::array<asio::mutable_buffer, 2u> seq {asio::buffer(data1), asio::buffer(data2)};
+
+    std::size_t n = file.read_some(seq); // <3>
+    if (n <= data1.size()) // <4>
+    {
+        data1.resize(n);
+        data2.clear();
+    }
+    else
+        data2.resize(n - data1.size());
     return 0;
 }
 // end::example[]
@@ -36,10 +46,20 @@ int main(int argc, char * argv[])
     asio::io_context ioc;
     asio::posix::stream_descriptor file{ioc, open("./test-file", O_RDONLY)};
 
-    std::string data;
-    data.resize(1024);
-    std::size_t n = file.read_some(asio::buffer(data));
-    data.resize(n); // <5>
+    std::string data1, data2;
+    data1.resize(512);
+    data2.resize(512);
+
+    std::array<asio::mutable_buffer, 2u> seq {asio::buffer(data1), asio::buffer(data2)};
+
+    std::size_t n = file.read_some(seq);
+    if (n <= data1.size())
+    {
+        data1.resize(n);
+        data2.clear();
+    }
+    else
+        data2.resize(n - data1.size());
     return 0;
 }
 

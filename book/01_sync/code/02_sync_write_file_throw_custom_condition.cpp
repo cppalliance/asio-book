@@ -25,5 +25,15 @@ int main(int argc, char * argv[])
 // end::example[]
 
 #else
-int main(int argc, char * argv[]) {return EXIT_FAILURE;}
+int main(int argc, char * argv[])
+{
+    asio::io_context ioc;
+    asio::stream_file file{ioc, "./test-file",
+                           asio::stream_file::write_only | asio::stream_file::create};
+
+    std::string data = "Hello World\n";
+    asio::write(file, asio::buffer(data), asio::transfer_at_least(11)); // <1>
+    return 0;
+}
+
 #endif

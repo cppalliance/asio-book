@@ -36,6 +36,8 @@ This gives us a type-erased view of the memory to be written, essentially a `[vo
 Obviously, any mutable section of memory can be viewed as a constant one, thus
 `asio::mutable_buffer` is implicitly convertible to `asio::const_buffer.
 
+NOTE: `asio::buffer("Hello World!\n")` would include the null-terminator.
+
 // KDM: I was thinking to more about buffer sequences here, but it'll be distracting I think
 
 A `write_some` operation may produce an error and write data. In the case of the {asio-ref}/stream_file.html[`asio::stream_file`]
@@ -69,14 +71,13 @@ include::./code/02_sync_write_file_throw.cpp[tag=example]
 
 By default `write` will write until the entire has been written. However, `write` also supports custom
 {asio-ref}/CompletionCondition.html[((CompletionCondition))s].
-
+[#CompletionConditions]
 
 [source,cpp]
 ----
 include::./code/02_sync_write_file_throw_custom_condition.cpp[tag=example]
 ----
 <1> With the condition we're writing at least 11 bytes out of a 12 byte buffer.
-
 The built-in `CompletionConditions` in asio are:
 
 - {asio-ref}/transfer_at_least.html[`asio::transfer_all`]

@@ -26,15 +26,13 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Linux)
     endif()
 endif()
 
-
-add_executable(01_sync_01_sync_timer_ec                             book/01_sync/code/01_sync_timer_ec.cpp)
-add_executable(01_sync_01_sync_timer_throw                          book/01_sync/code/01_sync_timer_throw.cpp)
-add_executable(01_sync_02_sync_write_some_file_ec                   book/01_sync/code/02_sync_write_some_file_ec.cpp)
-add_executable(01_sync_02_sync_write_some_file_throw                book/01_sync/code/02_sync_write_some_file_throw.cpp)
-add_executable(01_sync_02_sync_write_file_throw_custom_condition    book/01_sync/code/02_sync_write_file_throw_custom_condition.cpp)
-add_executable(01_sync_02_sync_write_file_throw                     book/01_sync/code/02_sync_write_file_throw.cpp)
-add_executable(01_sync_02_sync_write_file_sequence_throw            book/01_sync/code/02_sync_write_file_sequence_throw.cpp)
-add_executable(01_sync_03_sync_read_some_file_throw                 book/01_sync/code/03_sync_read_some_file_throw.cpp)
+add_custom_target(01_sync_examples)
+file(GLOB_RECURSE 01_sync_examples_sources book/01_sync/code/*.cpp)
+foreach(example_src ${01_sync_examples_sources})
+    get_filename_component(example ${example_src} NAME_WE)
+    add_library(01_sync_${example} ${example_src})
+    add_dependencies(01_sync_examples 01_sync_${example})
+endforeach ()
 
 
 file(GLOB_RECURSE ADOC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/book *.adoc)

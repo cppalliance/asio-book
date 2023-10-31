@@ -33,7 +33,6 @@ int main(int argc, char * argv[])
 
 #else
 
-
 #include <boost/asio.hpp>
 namespace asio = boost::asio;
 
