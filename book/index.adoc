@@ -1,4 +1,4 @@
-= Documentation boost.cobalt
+= boost.asio book
 Klemens Morgenstern <klemens.morgenstern@gmx.net>, Vinnie Falco <vinnie.falco@gmail.com>, Fernando Pelliccioni <fpelliccioni@gmail.com>
 Version 0.1, 30.10.2023
 :source-highlighter: rouge
