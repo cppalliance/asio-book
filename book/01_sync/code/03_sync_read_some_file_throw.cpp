@@ -18,24 +18,11 @@ int main(int argc, char * argv[])
     asio::stream_file file{ioc, "./test-file", asio::stream_file::write_only | asio::stream_file::create}; // <2>
 
     std::string data = "Hello World\n";
-    file.write_some(asio::buffer(data)); // <3>
+    asio::write(file, asio::buffer(data)); // <3>
     return 0;
 }
 // end::example[]
 
 #else
-
-#include <boost/asio.hpp>
-namespace asio = boost::asio;
-
-int main(int argc, char * argv[])
-{
-  // since we don't have native file support, we're using stream_descriptors directly
-  asio::io_context ioc;
-  asio::posix::stream_descriptor file{ioc, open("./test-file", O_WRONLY | O_CREAT)};
-
-  std::string data = "Hello World\n";
-  file.write_some(asio::buffer(data));
-  return 0;
-}
+int main(int argc, char * argv[]) {return EXIT_FAILURE;}
 #endif

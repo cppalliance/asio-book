@@ -9,21 +9,28 @@
 #if defined(BOOST_ASIO_HAS_FILE)
 
 // tag::example[]
+#include <array>
+
 #include <boost/asio.hpp>
 namespace asio = boost::asio;
 
 int main(int argc, char * argv[])
 {
-    asio::io_context ioc; // <1>
-    asio::stream_file file{ioc, "./test-file", asio::stream_file::write_only | asio::stream_file::create}; // <2>
+    asio::io_context ioc;
+    asio::stream_file file{ioc, "./test-file", 
+                           asio::stream_file::write_only | asio::stream_file::create};
 
-    std::string data = "Hello World\n";
-    file.write_some(asio::buffer(data)); // <3>
+    std::string header = "Hello ";
+    std::string body = "World!\n";
+
+    std::array<asio::const_buffer, 2u> buffers = {asio::buffer(header), asio::buffer(body)}; // <1>
+    asio::write(file, buffers); // <2>
     return 0;
 }
 // end::example[]
 
 #else
+#include <array>
 
 #include <boost/asio.hpp>
 namespace asio = boost::asio;
@@ -34,8 +41,13 @@ int main(int argc, char * argv[])
   asio::io_context ioc;
   asio::posix::stream_descriptor file{ioc, open("./test-file", O_WRONLY | O_CREAT)};
 
-  std::string data = "Hello World\n";
-  file.write_some(asio::buffer(data));
+
+  std::string header = "Hello ";
+  std::string body = "World!\n";
+
+  std::array<asio::const_buffer, 2u> buffers = {asio::buffer(header), asio::buffer(body)}; // <1>
+  asio::write(file, buffers); // <2>
   return 0;
 }
+
 #endif

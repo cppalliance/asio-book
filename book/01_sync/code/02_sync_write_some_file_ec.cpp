@@ -32,5 +32,28 @@ int main(int argc, char * argv[])
 // end::example[]
 
 #else
-int main(int argc, char * argv[]) {return EXIT_FAILURE;}
+
+
+#include <boost/asio.hpp>
+namespace asio = boost::asio;
+
+int main(int argc, char * argv[])
+{
+    using boost::system::error_code;
+
+    // since we don't have native file support, we're using stream_descriptors directly
+    asio::io_context ioc;
+    asio::posix::stream_descriptor file{ioc};
+    error_code ec;
+    auto fd = open("./tes-file", O_WRONLY | O_CREAT);
+    if (fd == -1)
+        ec.assign(errno, boost::system::system_category());
+    else
+    {
+        std::string data = "Hello World\n";
+        file.write_some(asio::buffer(data), ec);
+    }
+    return ec ? EXIT_FAILURE : EXIT_SUCCESS;
+}
+
 #endif

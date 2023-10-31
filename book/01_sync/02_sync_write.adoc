@@ -15,7 +15,7 @@ NOTE: File IO only works on windows or linux when `BOOST_ASIO_HAS_IO_URING` is d
 
 [source,cpp]
 ----
-include::./code/02_sync_write_some_file_throw.cpp[tag=example]
+include::./code/03_sync_read_some_file_throw.cpp[tag=example]
 ----
 <1> The ((execution context))
 <2> The file I/O Objects for stream reading (i.e. non-random access).
@@ -28,13 +28,13 @@ The size of the actually written data depends on the system API and settings lik
 The user of a `write_some` function therefor needs to consider the return value
 telling him how much data was written.
 
-The first parameter to the `write_some` function is a <<((ConstBufferSequence))>>,
+The first parameter to the `write_some` function is a <<ConstBufferSequence>,
 which will discussed in more detail later as well.
 For now, note that we're using the {asio-ref}/buffer.html[`asio::buffer`] function, 
 which returns a {asio-ref}/mutable_buffer.html[`asio::mutable_buffer`]. 
-This gives us a type-erased view of the memory to be written, essentially a `[const void *, std::size_t]` pair.
-A single `mutable_buffer` or {asio-ref}/const_buffer.html[`asio::const_buffer`] 
-fulfills the <<((ConstBufferSequence))>> requirements and .
+This gives us a type-erased view of the memory to be written, essentially a `[void *, std::size_t]` pair.
+Obviously, any mutable section of memory can be viewed as a constant one, thus
+`asio::mutable_buffer` is implicitly convertible to `asio::const_buffer.
 
 // KDM: I was thinking to more about buffer sequences here, but it'll be distracting I think
 
@@ -85,5 +85,33 @@ The built-in `CompletionConditions` in asio are:
 
 
 NOTE: All `asio::write` functions also has an overload that takes `error_code` as it's last parameter.
+
+=== ((ConstBufferSequence))
+
+asio's `write` and `write_some` functions do not take a single buffer, but a buffer sequence as its argument.
+That is because the operating system's operation may support vectorized IO:
+instead of writing data from a single segment of memory, the OS will write data from a vector of these.
+
+By allowing you to pass in multiple buffers into a write one, asio doesn't need to impose requirements like rearranging
+memory before the asynchronous operation.
+For example, you may have a message with a header and a body, and by using a vector of size 2, you don't need to copy
+the header and body into a dedicated memory section before initiating IO.
+
+[source,cpp]
+----
+include::./code/02_sync_write_file_sequence_throw.cpp[tag=example]
+----
+<1> Create a buffer sequence
+<2> Write multiple buffers to the file
+
+In order for a type to be a {asio-ref}/ConstBufferSequence.html[ConstBufferSequence],
+it needs to be a range, i.e. a type with a `begin` and `end` function, returning an iterator to a `asio::const_buffer`.
+
+Additionally, a single `asio::const_buffer` (or mutable) is itself a `ConstBufferSequence` of size 1.
+This avoids an extra overload of functions like `write` for a single buffer. I.e. you can just use
+{asio-ref}/buffer_sequence_begin.html[`asio::buffer_sequence_begin`] and
+{asio-ref}/buffer_sequence_end.html[`asio::buffer_sequence_end`] to iterator over the buffer sequence
+even if the caller passes in a single `const_buffer`.
+
 
 

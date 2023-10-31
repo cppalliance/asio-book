@@ -25,5 +25,19 @@ int main(int argc, char * argv[])
 // end::example[]
 
 #else
-int main(int argc, char * argv[]) {return EXIT_FAILURE;}
+
+#include <boost/asio.hpp>
+namespace asio = boost::asio;
+
+int main(int argc, char * argv[])
+{
+  // since we don't have native file support, we're using stream_descriptors directly
+  asio::io_context ioc;
+  asio::posix::stream_descriptor file{ioc, open("./test-file", O_WRONLY | O_CREAT)};
+
+  std::string data = "Hello World\n";
+  asio::write(file, asio::buffer(data));
+  return 0;
+}
+
 #endif

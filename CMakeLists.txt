@@ -27,14 +27,14 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Linux)
 endif()
 
 
-add_executable(01_sync_timer_ec     book/01_sync/code/01_sync_timer_ec.cpp)
-add_executable(01_sync_timer_throw  book/01_sync/code/01_sync_timer_throw.cpp)
-
-add_executable(02_sync_write_some_file_ec    book/01_sync/code/02_sync_write_some_file_ec.cpp)
-add_executable(02_sync_write_some_file_throw book/01_sync/code/02_sync_write_some_file_throw.cpp)
-
-add_executable(02_sync_write_file_throw_custom_condition book/01_sync/code/02_sync_write_file_throw_custom_condition.cpp)
-add_executable(02_sync_write_file_throw                  book/01_sync/code/02_sync_write_file_throw.cpp)
+add_executable(01_sync_01_sync_timer_ec                             book/01_sync/code/01_sync_timer_ec.cpp)
+add_executable(01_sync_01_sync_timer_throw                          book/01_sync/code/01_sync_timer_throw.cpp)
+add_executable(01_sync_02_sync_write_some_file_ec                   book/01_sync/code/02_sync_write_some_file_ec.cpp)
+add_executable(01_sync_02_sync_write_some_file_throw                book/01_sync/code/02_sync_write_some_file_throw.cpp)
+add_executable(01_sync_02_sync_write_file_throw_custom_condition    book/01_sync/code/02_sync_write_file_throw_custom_condition.cpp)
+add_executable(01_sync_02_sync_write_file_throw                     book/01_sync/code/02_sync_write_file_throw.cpp)
+add_executable(01_sync_02_sync_write_file_sequence_throw            book/01_sync/code/02_sync_write_file_sequence_throw.cpp)
+add_executable(01_sync_03_sync_read_some_file_throw                 book/01_sync/code/03_sync_read_some_file_throw.cpp)
 
 
 file(GLOB_RECURSE ADOC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/book *.adoc)

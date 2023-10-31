@@ -23,7 +23,7 @@ endif::asio-ref[]
 
 include::01_sync/01_sync_timer.adoc[]
 include::01_sync/02_sync_write.adoc[]
-include::01_sync/02_sync_write.adoc[]
+include::01_sync/03_sync_read.adoc[]
 
 [index]
 == Index
