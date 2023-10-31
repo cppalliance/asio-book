@@ -1,0 +1,65 @@
+//
+// Copyright (c) 2023 Klemens Morgenstern (klemens.morgenstern@gmx.net)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+== ((DynamicBuffer))
+
+Dynamic buffers are used by algorithms that need to resize the buffer,
+the most common being read algorithms that don't know the size ahead of time.
+
+A dynamic buffer consists of two buffer sequences,
+a mutable input sequence and a const output sequence.
+
+During a read an algorithm will allocate a mutable buffer in the input sequence,
+move it into the const sequence and potentially drop it.
+
+There are currently three families of dynamic buffers:
+
+{asio-ref}/streambuf.html[`((asio::streambuf))`]::
+
+This was the original, i.e. only dynamic buffer in older asio versions.
+It implements an `std::streambuf` and thus can be used with C++ `iostream`.
+
+It gets passed by reference, which Asio's `read_until` (et al.) account for by
+having a dedicated overload.
+
+{asio-ref}/DynamicBuffer_v1.html[`((DynamicBuffer_v1))`]::
+
+Asio defined two concepts for buffers, of which v1 is older, but still widely used & supported.
+In this book we'll stick to v1.
+
+.Using a DynamicBuffer v1
+[source,cpp]
+----
+include::./code/05_sync_read_file_dynamic.cpp[tag=example]
+----
+<1> Create a dynamic_buffer from an underlying string
+<2> Prepare an input buffer sequence and read into it
+<3> Commit the amount of read data from the input into the output sequence
+<4> Get the output buffer, i.e. const buffer sequence
+<5> Remove data from the output sequence.
+
+{asio-ref}/DynamicBuffer_v2.html[`((DynamicBuffer_v2))`]::
+
+The v2 concept allows random access to the underlying buffers sequences.
+
+It's implemented by `dynamic_string_buffer` and `dynamic_vector_buffer`.
+
+boost.beast buffers::
+
+Based on Asio's streambuf, Vinnie Falco added his own dynamic buffers to beast before the `DynamicBuffer_v1` concept existed.
+which own the memory & get passed by reference.
+
+- {beast-ref}/boost__beast__flat_buffer.html[`flat_buffer`]
+- {beast-ref}/boost__beast__multi_buffer.html[`multi_buffer`]
+- {beast-ref}/boost__beast__flat_static_buffer.html[`flat_static_buffer`]
+- {beast-ref}/boost__beast__static_buffer.html[`static_buffer`]
+
+They can be passed by value as a `DynamicBuffer_v1` by value
+when wrapped in a {beast-ref}/boost__beast__buffer_ref.html[`buffer_ref`]
+
+
+

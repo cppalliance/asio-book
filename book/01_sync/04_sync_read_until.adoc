@@ -58,6 +58,4 @@ while `buffer` will be resized so it contains all the data.
 +---------------------------------------- buffer ----------------------------------------+
 ----
 
-<<DynamicBuffer, DynamicBuffers>> will be discussed in depth later in this book.
-
-// KDM: This feels like a weird cutoff - I should return to this once the dynamic_buffer in depth is written.
+// KDM: This feels like a weird cutoff

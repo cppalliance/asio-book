@@ -1,0 +1,32 @@
+//
+// Copyright (c) 2023 Klemens Morgenstern (klemens.morgenstern@gmx.net)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+// STATUS: No docs yet really
+
+== writing json
+
+https://www.boost.org/doc/libs/release/libs/json[boost.json]
+provides excellent stream based serialization & parsing.
+We'll utilize to write our own `read` & `write` functions,
+to provide examples without implementing parsing & serialization.
+
+[source,cpp]
+----
+include::./code/06_sync_write_json.cpp[tag=example]
+----
+<1> Initialize the serializer
+<2> Obtain the dynamic buffer
+<3> Get the mutable buffer. We know this is a single mutable_buffer for a `asio::dynamic_string_buffer`.
+<4> Read data from the serializer and remember the size written.
+<5> Commit the read amount, i.e. move it from the input to the output sequence.
+<6> Write as much of the output sequence as possible.
+<7> Remove how much has been written from the input
+<8> Write remaining data to the stream.
+
+NOTE: Using an `asio::dynamic_string_buffer` is not the
+best choice as we could put the buffer on the stack.
+
