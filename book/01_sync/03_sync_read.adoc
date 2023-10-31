@@ -7,7 +7,7 @@
 
 // STATE: Stream of consciousness
 
-== Reading from file
+=== Reading from file
 
 Reading from a stream IO Object is similar to writing, except that we need a mutable_buffer sequence.
 

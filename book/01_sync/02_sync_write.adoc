@@ -7,8 +7,6 @@
 
 // STATE: Stream of consciousness
 
-== Writing to files
-
 === File IO Objects
 
 NOTE: File IO only works on windows or linux when `BOOST_ASIO_HAS_IO_URING` is defined & `liburing` installed.
